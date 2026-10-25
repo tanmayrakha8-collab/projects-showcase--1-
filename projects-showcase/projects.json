@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Tanmay \u2013 Personal Portfolio",
+    "summary": "My personal site: who I am, what I'm studying, the stack I use and how to reach me. Built with React and Node.js on Lovable.",
+    "stack": [
+      "React",
+      "Node.js",
+      "TypeScript",
+      "Lovable"
+    ],
+    "live": "https://tanmay77.lovable.app",
+    "repo": "",
+    "status": "live"
+  },
+  {
+    "name": "Dev Tyres Soles Website",
+    "summary": "Marketing site for a tyre retreading business in Hisar, Haryana, with Google Maps and WhatsApp contact built in.",
+    "stack": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "SVG"
+    ],
+    "live": "https://dev-tyres-soles.vercel.app/",
+    "repo": "",
+    "status": "live"
+  }
+
+]

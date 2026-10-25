@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tanmay – Projects</title>
+<meta name="description" content="Deployed projects by Tanmay: websites, tools and apps.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f1ec; --ink:#1d1f1c; --muted:#5d625a; --line:#cfcbc0;
+  --accent:#e6b800; --card:#fbfaf7; --live:#1f7a4d;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#181a17; --ink:#ecebe5; --muted:#a3a79d; --line:#33372f; --accent:#f0c419; --card:#20231f; --live:#5fcf9a; }
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:1rem}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Serif 4",Georgia,serif;line-height:1.6;font-size:1.05rem}
+.tread{height:28px;background:
+  repeating-linear-gradient(115deg,var(--ink) 0 14px,transparent 14px 28px),var(--accent);
+  border-bottom:3px solid var(--ink)}
+header,main,footer{max-width:62rem;margin:0 auto;padding:0 1.25rem}
+header{padding-top:3.5rem;padding-bottom:2rem}
+h1{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:clamp(2.4rem,7vw,4.5rem);line-height:1;margin:0 0 1rem;letter-spacing:-.02em}
+header p{max-width:36rem;color:var(--muted);margin:0}
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin:2rem 0 1.5rem}
+.filters button{font:inherit;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:500;font-size:.95rem;
+  background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:.35rem .9rem;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.filters button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:1.25rem;padding-bottom:3rem}
+article{background:var(--card);border:1.5px solid var(--line);border-left:6px solid var(--ink);padding:1.25rem 1.25rem 1.1rem;display:flex;flex-direction:column;gap:.75rem}
+article[data-status="live"]{border-left-color:var(--live)}
+article h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.4rem;margin:0;line-height:1.15}
+article p{margin:0;color:var(--muted);font-size:1rem;flex:1}
+.status{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:.85rem;font-weight:700;color:var(--live)}
+.status.off{color:var(--muted)}
+.stack{display:flex;flex-wrap:wrap;gap:.35rem;padding:0;margin:0;list-style:none}
+.stack li{font-size:.85rem;border:1px solid var(--line);padding:.05rem .5rem;border-radius:4px}
+.links{display:flex;gap:1.1rem;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700}
+.links a{color:var(--ink);text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:var(--accent)}
+.empty{color:var(--muted)}
+footer{padding-bottom:3rem;color:var(--muted);font-size:.95rem}
+</style>
+</head>
+<body>
+<div class="tread" aria-hidden="true"></div>
+<header>
+  <h1>Things I've built and shipped</h1>
+  <p>Websites, tools and apps I made, mostly for a family tyre retreading business. Open the live ones, or read the code.</p>
+  <div class="filters" role="group" aria-label="Filter projects">
+    <button aria-pressed="true" data-f="all">All</button>
+    <button aria-pressed="false" data-f="live">Live on the web</button>
+    <button aria-pressed="false" data-f="app">Apps</button>
+  </div>
+</header>
+<main>
+  <div class="grid" id="grid" aria-live="polite"></div>
+</main>
+<footer>Built with plain HTML. Edit <code>projects.json</code> to add a project.</footer>
+<script>
+const grid = document.getElementById('grid');
+const buttons = document.querySelectorAll('.filters button');
+let projects = [];
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+function render(filter){
+  const list = projects.filter(p =>
+    filter==='all' ? true : filter==='live' ? p.status==='live' : p.status!=='live');
+  if(!list.length){ grid.innerHTML='<p class="empty">No projects in this group yet.</p>'; return; }
+  grid.innerHTML = list.map(p => {
+    const isLive = p.status==='live';
+    const label = isLive ? 'Live' : p.status==='app' ? 'Android app' : 'Desktop app';
+    return `<article data-status="${esc(p.status)}">
+      <span class="status ${isLive?'':'off'}">${label}</span>
+      <h2>${esc(p.name)}</h2>
+      <p>${esc(p.summary)}</p>
+      <ul class="stack">${p.stack.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>
+      <div class="links">
+        ${p.live ? `<a href="${esc(p.live)}" target="_blank" rel="noopener">Open site</a>` : ''}
+        ${p.repo ? `<a href="${esc(p.repo)}" target="_blank" rel="noopener">View code</a>` : ''}
+      </div>
+    </article>`;
+  }).join('');
+}
+
+buttons.forEach(b => b.addEventListener('click', () => {
+  buttons.forEach(x => x.setAttribute('aria-pressed', x===b));
+  render(b.dataset.f);
+}));
+
+fetch('projects.json').then(r=>r.json()).then(d=>{ projects=d; render('all'); })
+  .catch(()=>{ grid.innerHTML='<p class="empty">Could not load projects.json. If you opened this file directly, run a local server (python -m http.server).</p>'; });
+</script>
+</body>
+</html>
